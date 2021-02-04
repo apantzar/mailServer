@@ -4,15 +4,16 @@ import java.util.ArrayList;
 
 public class AccountClass {
 
-    private ArrayList<EmailClass> superMail;
-    private String userName;
-    private String userPassword;
-    private int userAutoId=1;
+    private ArrayList<EmailClass> mailbox;
+    private String username;
+    private String password;
+    private int userAutoId;
 
     public AccountClass(String userName , String userPassword) {
-        this.userName = userName;
-        this.userPassword = userPassword;
-        this.superMail = new ArrayList<>();
+        this.username = userName;
+        this.password = userPassword;
+        this.mailbox = new ArrayList<>();
+        this.userAutoId = 1; //CHECK
 
     }
 
@@ -20,16 +21,16 @@ public class AccountClass {
     /////////////////////////////////Setters & Getters/////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
-    public ArrayList<EmailClass> getSuperMail() {
-        return superMail;
+    public ArrayList<EmailClass> getMailbox() {
+        return mailbox;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassword() {
+        return password;
     }
 
     public int getUserAutoId() {
@@ -37,7 +38,7 @@ public class AccountClass {
     }
 
     ///////////////////////////////////////////////////////////////////////
-
+    /////////////////////////////METHODS//////////////////////////////////
 
 
     /**
@@ -46,23 +47,50 @@ public class AccountClass {
      * @return ---> true or false
      */
 
+    //CHECK
     public boolean isPasswordCorrect(String givenPassword){
 
-        return this.userPassword.equals(givenPassword);
+        return this.password.equals(givenPassword);
     }
+
 
 
 
     /**
      * To give a unique Id for every user
-     * in order yo have a specific id foe
+     * in order yo have a specific id for
      * each user.
      */
 
+    //CHECK
     private void giveUniqueId(){
         userAutoId = userAutoId;
         userAutoId++;
     }
+
+
+    /**
+     *
+     * @param idToSearch ---> in order to search and find the mail with this user's id
+     * @return  --> email if the id exists/ null if id doesn't
+     */
+    public EmailClass giveEmail(int idToSearch){
+         for(EmailClass emailToReturn : mailbox){
+
+             if(idToSearch==emailToReturn.getId()){
+                 return  emailToReturn;
+             }
+
+         }
+        System.out.println("Not found!"); //for testing
+         return null;
+
+    }
+
+
+
+
+
 
 
 }
