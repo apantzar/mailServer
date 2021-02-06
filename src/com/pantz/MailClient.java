@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class MailClient {
@@ -23,6 +24,11 @@ public class MailClient {
     private ObjectInputStream input;
     private ObjectOutputStream output;
     private String inputForStarter , getResponseValue;
+
+
+    public MailClient() throws UnknownHostException{
+        this(4456, InetAddress.getLocalHost());
+    }
 
     public MailClient( int port, InetAddress ipAddress) {
         this.usersGivenInput = new Scanner(System.in);
