@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class MailServer {
     private int port;
+    private ArrayList<String> functionsList;
     private ServerSocket socket;
     private ArrayList<AccountClass> accounts = new ArrayList<>();
     private ArrayList<Functions> functions = new ArrayList<>();
@@ -76,6 +77,14 @@ public class MailServer {
 
     }
 
+
+    /**
+     * To start the server in the port that it listens
+     * Moreover, sends new function, stores the
+     * function into the list.
+     *
+     */
+
     public void starter(){
 
 
@@ -101,13 +110,58 @@ public class MailServer {
             }
 
             System.out.println("You are connected -->"+cl.getInetAddress() + "::" +port);
-            Functions f = new Functions(cl);
+            Functions functionNotTheList = new Functions(cl);
+            functions.add(functionNotTheList);
 
         }
 
 
 
     }
+    public synchronized boolean isNewAccountAdder(AccountClass account){
+
+        if(searchWithUserName(account.getUsername() )!= null){
+            return false;
+        }
+
+        if(!account.validationChecker(account.getUsername())){
+            return false;
+        }
+        accounts.add(account);
+
+        return true;
+
+    }
+
+
+
+    public synchronized AccountClass searchWithUserName(String username){
+        for(AccountClass accountClass : accounts){
+            if(username.equals(accountClass.getUsername())){
+                return accountClass;
+            }
+        }
+
+        return null;
+    }
+
+
+    public synchronized void remover(Functions function){
+        functionsList.remove(function);
+        System.out.println("Disconnected");
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
