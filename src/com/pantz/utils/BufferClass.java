@@ -107,6 +107,8 @@ public class BufferClass {
     }
 
 
+
+
     /**
      * Building some UI
      * @param howMany ---> how many times to add the symbol

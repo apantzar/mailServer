@@ -27,7 +27,7 @@ public class MailClient {
 
 
     public MailClient() throws UnknownHostException{
-        this(4456, InetAddress.getLocalHost());
+        this(2340, InetAddress.getLocalHost());
     }
 
     public MailClient( int port, InetAddress ipAddress) {
@@ -53,12 +53,15 @@ public class MailClient {
             }
         }catch (Exception e){
 
+            System.out.println(WRONG_INPUT_FLAG);
+
         }
     }
 
-
     /**
-     * Try to connect to the server
+     * checking connection status,
+     * calls the starter if connection is
+     * possible.
      */
 
     public void checkConnection(){
@@ -75,7 +78,8 @@ public class MailClient {
 
 
     /**
-     * To start connection with the server
+     * To start connection with the server,
+     * data exchange will be started
      */
 
     public void starter(){
@@ -122,7 +126,7 @@ public class MailClient {
 
 
     /**
-     *
+     * Try to connect to the server
      * @return---> true or false if server has connection problem
      */
     public boolean tryToConnect(){
@@ -142,8 +146,11 @@ public class MailClient {
 
 
     /***
-     *
-     * @return true or false:
+     * Terminal UI :
+     * Server's results will be printed,
+     * If we have EXIT_FLAG should be return
+     * false
+     * @return true or false
      */
 
 
