@@ -173,9 +173,9 @@ public class MailServer  {
 
 
     public static class Functions extends Thread{
-        private static final int SIZE_ID = 10;
-        private static final int SIZE_FROM = 22;
-        private static final int SIZE_SUBJECT = 40;
+        private static final int SIZE_ID = 12;
+        private static final int SIZE_FROM = 40;
+        private static final int SIZE_SUBJECT = 55;
 
         public static final String EXIT_FLAG = "Bye!";
         public static MailServer theServer;
@@ -218,12 +218,12 @@ public class MailServer  {
             String input;
 
             while (true){
-                out.addDisplayLine(10 , '=');
+                out.addDisplayLine(15 , '=');
                 for (String option: menuOptions){
                     out.adder("--> " +option +System.lineSeparator() );
 
                 }
-                out.addDisplayLine(10 , '=');
+                out.addDisplayLine(15 , '=');
                  input = inputGetter();
 
 
@@ -448,16 +448,16 @@ public class MailServer  {
                 out.adder("Empty mailbox"+System.lineSeparator());
                 return false;
             }
-            out.addStringWithSize(SIZE_ID, "ID");
-            out.addStringWithSize(SIZE_FROM, "FROM");
-            out.addStringWithSize(SIZE_SUBJECT, "SUBJECT");
+            out.addStringWithSize(SIZE_ID, "ID \t\t\t");
+            out.addStringWithSize(SIZE_FROM, "FROM\t\t ");
+            out.addStringWithSize(SIZE_SUBJECT, "SUBJECT ");
             out.adder(System.lineSeparator());
 
             for(EmailClass emailClass : mailUser.getMailbox()){
-                String theId =  String.format("%d. %s", emailClass.getId() , emailClass.isRead() ? "[New]" : "");
+                String theId =  String.format("%d. %s", emailClass.getId() , emailClass.isRead() ? " [New] " : "");
 
                 out.addStringWithSize(SIZE_ID, theId);
-                out.addStringWithSize(SIZE_FROM, emailClass.getSender());
+                out.addStringWithSize(SIZE_FROM, emailClass.getSender()+" ");
                 out.addStringWithSize(SIZE_SUBJECT, emailClass.getSubject());
                 out.adder(System.lineSeparator());
 

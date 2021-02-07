@@ -7,16 +7,17 @@ import java.util.regex.Pattern;
 
 public class AccountClass {
 
+    private int id;
     private List<EmailClass> mailbox;
     private String username;
     private String password;
-    private int userAutoId;
+    private int userAutoId =1;
 
     public AccountClass(String userName , String userPassword) {
+        giveUniqueId();
         this.username = userName;
-        this.password = userPassword;
         this.mailbox = new ArrayList<>();
-        this.userAutoId = 1; //CHECK
+        this.password = userPassword;
 
     }
 
@@ -83,8 +84,8 @@ public class AccountClass {
 
     //CHECK
     private void giveUniqueId(){
-        userAutoId = userAutoId;
-        userAutoId++;
+
+       id= userAutoId++;
     }
 
 
@@ -123,6 +124,7 @@ public class AccountClass {
             return false;
         }
 
+        mailbox.add(0,newEmail);
         return true;
 
 

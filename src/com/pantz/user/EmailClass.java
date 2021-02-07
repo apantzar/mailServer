@@ -3,11 +3,8 @@ package com.pantz.user;
 public class EmailClass {
 
    private int id;
-   private  boolean isNewEmail;
-   private String sender;
-   private String receiver;
-   private String subject;
-   private String mainbody;
+   private  boolean isNewEmail=true;
+   private String sender, receiver, subject, mainbody;
    private int idIncreaser=1; //CHECK
 
 
@@ -18,9 +15,6 @@ public class EmailClass {
         this.subject = subject;
         this.mainbody = mainbody;
 
-
-        this.isNewEmail = true;
-        this.idIncreaser=1; //μπορει να θελει αλλαγη θεσης
     }
 
 
@@ -33,10 +27,6 @@ public class EmailClass {
         id = idIncreaser++;
     }
 
-
- /*   public boolean isNewEmail() {
-        return isNewEmail;
-    }*/
 
     ///////////////////////////////////////SETTERS-GETTERS///////////////////////////////////////////
 
@@ -59,10 +49,6 @@ public class EmailClass {
         return mainbody;
     }
 
-    public int getIdIncreaser() {
-        return idIncreaser;
-    }
-
     public int getId() {
         return id;
     }
@@ -75,9 +61,6 @@ public class EmailClass {
     public boolean isRead(){
 
         return  isNewEmail ;
-
-
-
     }
 
     public  void setRead(){
@@ -91,7 +74,4 @@ public class EmailClass {
      */
 
 
-    public void isNew(){
-        isNewEmail = true;
-    }
 }
