@@ -10,35 +10,42 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MailServer {
+public class MailServer  {
+
+    private static final int SIZE_ID = 10;
+    private static final int SIZE_FROM = 22;
+    private static final int SIZE_SUBJECT = 40;
+
     private int port;
     private ArrayList<String> functionsList;
     private ServerSocket socket;
-    private ArrayList<AccountClass> accounts = new ArrayList<>();
-    private ArrayList<Functions> functions = new ArrayList<>();
-    private String menuOptionInput;
-    private boolean stat;
-    private static final int DEF_PORT=2340;
-    public  MailServer theServer;
-    private static  final String WRONG_INPUT_FLAG = "[✘] Dear user, please give valid 'ip' 'port' values";
+    private List<AccountClass> accounts ;
+    private List<Functions> functions;
+
+
+    private static final int DEF_PORT=1919;
+
+    private AccountClass theUser;
+    private static  final String WRONG_INPUT_FLAG = "[X] Dear user, please give valid 'ip' 'port' values";
 
 
     public MailServer(int port){
         this.port = port;
-        theServer = this;
+        accounts = new ArrayList<>();
+        functions = new ArrayList<>();
+        Functions.theServer = this;
+
         initAccounts();
         starter();
 
     }
 
 
-
     public MailServer(){
         this(DEF_PORT);
     }
-
-
 
 
     public static void main(String[] args) {
@@ -52,15 +59,8 @@ public class MailServer {
         }catch (Exception e){
 
             System.out.println(WRONG_INPUT_FLAG);
-
             e.printStackTrace();
-
         }
-
-
-
-
-
 
     }
 
@@ -73,6 +73,12 @@ public class MailServer {
         AccountClass accountClass3 = new AccountClass("maria@protonmail.com" , "789");
 
         accountClass1.addEmail(new EmailClass("thomson@gmail.com" ,"alex@csd.com","Exams Results","Hello, 09009:10 , 0450:3 , 09380:8 , 900:1"));
+        accountClass1.addEmail(new EmailClass("alex@csd.com" ,"thomson@gmail.com","Answer to this","Check your inbox"));
+        accountClass1.addEmail(new EmailClass("thomson@gmail.com" ,"alex@csd.com","Exams Results","Hello, 09009:10 , 0450:3 , 09380:8 , 900:1"));
+
+        isNewAccountAdder(accountClass1);
+        isNewAccountAdder(accountClass2);
+        isNewAccountAdder(accountClass3);
 
 
     }
@@ -90,10 +96,10 @@ public class MailServer {
 
         try{
            socket = new ServerSocket(port);
-            System.out.println("Wait...");
+            System.out.println("Listening for incoming connections...");
 
         }catch (IOException e){
-            System.out.println("error");
+            System.out.println("[X] Incoming connections error");
             e.printStackTrace();
         }
 
@@ -105,8 +111,6 @@ public class MailServer {
 
                 e.printStackTrace();
                 continue;
-
-
             }
 
             System.out.println("You are connected -->"+cl.getInetAddress() + "::" +port);
@@ -115,9 +119,9 @@ public class MailServer {
 
         }
 
-
-
     }
+
+
     public synchronized boolean isNewAccountAdder(AccountClass account){
 
         if(searchWithUserName(account.getUsername() )!= null){
@@ -159,13 +163,6 @@ public class MailServer {
 
 
 
-
-
-
-
-
-
-
     //////////////////////////////////////////////////////////////////////////////
     /////////////////////////////The-Functions-Class/////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -177,18 +174,22 @@ public class MailServer {
      */
 
 
-    public class Functions extends Thread{
+    public static class Functions extends Thread{
 
         public static final String EXIT_FLAG = "Bye!";
+        public static MailServer theServer;
 
-        private Socket theClient;
+        private static Socket theClient;
         private ObjectInputStream inputCl;
         private ObjectOutputStream outputCl;
         private BufferClass out;
         private ArrayList<String> loginClient = new ArrayList<>() ;
         private ArrayList <String> noLoginClient = new ArrayList<>();
         private AccountClass mailUser;
-
+        private AccountClass userR ,userL;
+        private String menuOptionInput;
+        private boolean stat;
+        private AccountClass theUser;
 
         public Functions(Socket theClient){
             this.theClient = theClient;
@@ -209,16 +210,49 @@ public class MailServer {
         }
 
 
+
+
+        private String menuInput(ArrayList<String> menuOptions){
+
+            while (true){
+                out.addDisplayLine(10 , '=');
+                for (String option: menuOptions){
+                    out.adder("--> " +option +System.lineSeparator() );
+
+                }
+                out.addDisplayLine(10 , '=');
+                menuOptionInput = inputGetter();
+
+
+                if(menuOptions.contains(menuOptionInput)|| menuOptionInput.equals(null)){
+                    return menuOptionInput;
+                }else{
+                    out.adder("Check your input. " + System.lineSeparator());
+                }
+
+            }
+
+
+
+
+        }
+
+
+
+
         /**
-         * Method giveValuestoList adds options
+         * Method run() adds options
          * into lists for guest users , registered users
+         *  run() <--Thread method
          */
 
-        public void giveValuestoList(){
+        public void run(){
+
+            boolean stat = true;
 
             noLoginClient.add("Login");
             noLoginClient.add("Register");
-            noLoginClient.add("exit");
+            noLoginClient.add("Exit");
 
             loginClient.add("NewEmail");
             loginClient.add("ShowEmails");
@@ -231,30 +265,17 @@ public class MailServer {
 
             while (true){
 
-                if(mailUser.equals(null)){
+                if(mailUser == null){
 
-                    stat = welcomeMsg("Hello, you connected as a guest",stat);
+                    stat = welcomeMsg("Hello, you  connected as a guest",stat);
                     menuOptionInput = menuInput(noLoginClient);
                 }else{
                     stat = welcomeMsg("Welcome back "+ mailUser.getUsername(),stat);
                     menuOptionInput = menuInput(loginClient);
                 }
 
-
-
                 choice(menuOptionInput);
-
-
-
-
-
-
-
             }
-
-
-
-
         }
 
 
@@ -273,27 +294,22 @@ public class MailServer {
                 case "Register":
                     register();
                     break;
-                case "newEmail":
+                case "NewEmail":
                     newEmail();
                     break;
-                case "showEmails":
+                case "ShowEmails":
                     showEmails();
                     break;
-                case "readEmails":
+                case "ReadEmails":
                     readEmails();
                     break;
-                case "deleteEmails":
+                case "DeleteEmails":
                     deleteEmails();
                     break;
-                case "logOut":
+                case "LogOut":
                     logOut();
                     break;
-
-
             }
-
-
-
 
         }
 
@@ -303,10 +319,21 @@ public class MailServer {
 
         public void logIn(){
 
+            AccountClass testUser;
+            String username , password;
 
+            out.adder("Type your username"+System.lineSeparator());
+            username = inputGetter();
 
+            out.adder("Type your password"+System.lineSeparator());
+            password=inputGetter();
 
-
+            testUser = theServer.searchWithUserName(username);
+            if(testUser==null|| !testUser.isPasswordCorrect(password)){
+                out.adder("[X] Login Failed. Wrong username or password"+System.lineSeparator());
+            }else {
+                this.mailUser= testUser;
+            }
 
 
         }
@@ -314,59 +341,152 @@ public class MailServer {
 
         public void register(){
 
-
-            String username;
-            String password;
+            AccountClass userTest;
+            String username, password;
 
             out.adder("Type your username "+System.lineSeparator());
             username = inputGetter();
 
-
-
             out.adder("Type your password"+System.lineSeparator());
             password=inputGetter();
 
-            AccountClass newUser = new AccountClass(username , password);
+            userTest = new AccountClass(username , password);
+
+            if(theServer.isNewAccountAdder(userTest)){
+               this.mailUser = userTest;
+            }else{
+                out.adder("[X] Username exists");
+            }
 
 
         }
 
 
-
-        public void readEmails(){
-
-        }
+        /**
+         * Creates and sends email
+         * to an account.
+         *
+         */
 
 
         public void newEmail(){
 
+            EmailClass email;
+            String mainMail, receiver , subject;
+            AccountClass toRece;
 
+            out.adder("Receiver: "+System.lineSeparator());
+            receiver = inputGetter();
+
+            out.adder("Subject: "+System.lineSeparator());
+            subject = inputGetter();
+
+            out.adder("Main mail: "+System.lineSeparator());
+            mainMail = inputGetter();
+
+            toRece = theServer.searchWithUserName(receiver);
+            email = new EmailClass(mailUser.getUsername() , receiver , subject , mainMail);
+
+            if(toRece.addEmail(email)&& toRece != null){
+                out.adder("Sent"+System.lineSeparator());
+
+            }else{
+                out.adder("[X] Error not sent"+System.lineSeparator());
+            }
+        }
+
+
+        /**
+         * Shows the email with the unique id
+         */
+
+        public void readEmails(){
+            int theId;
+            EmailClass emailClass;
+
+            out.adder("Email with id --->"+System.lineSeparator());
+
+            try{
+                theId = Integer.parseInt(inputGetter());
+            }catch (Exception e){
+                theId = -1;
+                e.printStackTrace();
+            }
+            emailClass = theUser.giveEmail(theId);
+
+            if(emailClass != (null)){
+                out.addStringWithSize(10 , "FROM: ");
+                out.adder(emailClass.getSender());
+                out.adder(System.lineSeparator());
+                out.addStringWithSize(10 , "SUBJECT");
+                out.adder(emailClass.getSubject());
+                out.adder(System.lineSeparator());
+                out.addDisplayLine(10 , '|');
+                out.adder(emailClass.getMainbody()+System.lineSeparator());
+                emailClass.setRead();
+
+            }else{
+                out.adder("[X] Error during reading email");
+            }
 
         }
 
 
-        public  void showEmails(){
+        /**
+         * This Method is responsible to show the mailbox
+         * to user.
+         * @return true or false
+         */
 
+        public boolean  showEmails(){
+            if(mailUser.getMailbox().size() <1){
+                out.adder("Empty mailbox"+System.lineSeparator());
+                return false;
+            }
+            out.addStringWithSize(SIZE_ID, "ID");
+            out.addStringWithSize(SIZE_FROM, "FROM");
+            out.addStringWithSize(SIZE_SUBJECT, "SUBJECT");
+            out.adder(System.lineSeparator());
 
+            for(EmailClass emailClass : mailUser.getMailbox()){
+                String theId =  String.format("%d. %s", emailClass.getId() , emailClass.isRead() ? "[New]" : "");
+
+                out.addStringWithSize(SIZE_ID, theId);
+                out.addStringWithSize(SIZE_FROM, emailClass.getSender());
+                out.addStringWithSize(SIZE_SUBJECT, emailClass.getSubject());
+                out.adder(System.lineSeparator());
+
+            }
+
+            return true;
 
         }
 
+        /**
+         * This method will delete
+         * an existing email
+         */
 
         public void deleteEmails(){
+            int theId;
+            out.adder("ID Email: "+System.lineSeparator());
+            try{
+
+                theId = Integer.parseInt(inputGetter());
+
+            }catch (Exception e){
+                theId = -1;
+                e.printStackTrace();
+            }
+
+            if(mailUser.deleteEmail(theId)){
+                out.adder("Email id -->"+theId+" deleted");
+            }else{
+                out.adder("[X] Error during delete process ");
+            }
 
 
         }
-
-
-
-        public void logOut(){
-
-
-        }
-
-
-
-
 
 
 
@@ -380,7 +500,7 @@ public class MailServer {
 
         public boolean welcomeMsg(String msg , boolean stat){
 
-            if((mailUser.equals(null) && stat) || (!mailUser.equals(null) && !stat)){
+            if((mailUser==null && stat) || (mailUser!=null && !stat)){
 
                 out.addDisplayLine(10 , '=');
                 out.adder(msg + System.lineSeparator());
@@ -405,30 +525,7 @@ public class MailServer {
          * @return
          */
 
-        private String menuInput(ArrayList<String> menuOptions){
 
-            while (true){
-                out.addDisplayLine(10 , '=');
-                for (String option: menuOptions){
-                    out.adder(") "+ System.lineSeparator() );
-
-                }
-                out.addDisplayLine(10 , '=');
-                menuOptionInput = inputGetter();
-
-
-                if(menuOptions.contains(menuOptionInput)|| menuOptionInput.equals(null)){
-                    return menuOptionInput;
-                }else{
-                    out.adder("Check your input. " + System.lineSeparator());
-                }
-
-            }
-
-
-
-
-        }
 
         /**
          * Sends the output to user & returns the input
@@ -470,6 +567,17 @@ public class MailServer {
                 e.printStackTrace();
             }
         }
+
+
+        /**
+         * Logout method
+         */
+        public void logOut(){
+
+            mailUser=null;
+
+        }
+
 
 
 

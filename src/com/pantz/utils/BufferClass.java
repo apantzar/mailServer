@@ -115,11 +115,15 @@ public class BufferClass {
      * @param symbolToPrint ---> the symbol that will add.
      */
     public void addDisplayLine(int howMany , char symbolToPrint){
+        theUIpart="";
         for(int counter2=0; counter2<howMany;counter2++){
 
-            adder(theUIpart+ System.lineSeparator());
+            theUIpart += symbolToPrint;
 
-        }
+
+
+
+        }  adder(theUIpart+ System.lineSeparator());
 
     }
 

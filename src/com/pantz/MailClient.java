@@ -12,9 +12,9 @@ import java.util.Scanner;
 
 public class MailClient {
 
-    public static final String CONNECTION_ERROR_FLAG = "[✘] Oh no, connection error 〲",
-     NOT_FOUND_CONNECTION__ERROR_FLAG = "[✘] Wow ,server is down now please try again ⍨ ",
-     WRONG_INPUT_FLAG = "[✘] Dear user, please give valid 'ip' 'port' values",
+    public static final String CONNECTION_ERROR_FLAG = "[X] Oh no, connection error 〲",
+     NOT_FOUND_CONNECTION__ERROR_FLAG = "[X] Wow ,server is down now please try again ⍨ ",
+     WRONG_INPUT_FLAG = "[X] Dear user, please give valid 'ip' 'port' values",
      EXIT_FLAG = "Bye!";
 
     private Scanner usersGivenInput;
@@ -27,7 +27,7 @@ public class MailClient {
 
 
     public MailClient() throws UnknownHostException{
-        this(2340, InetAddress.getLocalHost());
+        this(1919, InetAddress.getLocalHost());
     }
 
     public MailClient( int port, InetAddress ipAddress) {
@@ -50,6 +50,8 @@ public class MailClient {
                 new MailClient(port , ipAddress);
 
 
+            }else {
+               new MailClient();
             }
         }catch (Exception e){
 

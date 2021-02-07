@@ -71,10 +71,16 @@ public class EmailClass {
      * Checks if the email is old mail
      * and sets the @variable isNewEmail= false
      */
-    public void isRead(){
+    public boolean isRead(){
 
-        isNewEmail =false;
+        return  isNewEmail ;
 
+
+
+    }
+
+    public  void setRead(){
+        isNewEmail = false;
     }
 
 
