@@ -14,9 +14,7 @@ import java.util.List;
 
 public class MailServer  {
 
-    private static final int SIZE_ID = 10;
-    private static final int SIZE_FROM = 22;
-    private static final int SIZE_SUBJECT = 40;
+
 
     private int port;
     private ArrayList<String> functionsList;
@@ -175,6 +173,9 @@ public class MailServer  {
 
 
     public static class Functions extends Thread{
+        private static final int SIZE_ID = 10;
+        private static final int SIZE_FROM = 22;
+        private static final int SIZE_SUBJECT = 40;
 
         public static final String EXIT_FLAG = "Bye!";
         public static MailServer theServer;
@@ -186,10 +187,10 @@ public class MailServer  {
         private ArrayList<String> loginClient = new ArrayList<>() ;
         private ArrayList <String> noLoginClient = new ArrayList<>();
         private AccountClass mailUser;
-        private AccountClass userR ,userL;
-        private String menuOptionInput;
-        private boolean stat;
-        private AccountClass theUser;
+        //private AccountClass userR ,userL;
+
+        //private boolean stat;
+        //private AccountClass theUser;
 
         public Functions(Socket theClient){
             this.theClient = theClient;
@@ -214,6 +215,8 @@ public class MailServer  {
 
         private String menuInput(ArrayList<String> menuOptions){
 
+            String input;
+
             while (true){
                 out.addDisplayLine(10 , '=');
                 for (String option: menuOptions){
@@ -221,11 +224,11 @@ public class MailServer  {
 
                 }
                 out.addDisplayLine(10 , '=');
-                menuOptionInput = inputGetter();
+                 input = inputGetter();
 
 
-                if(menuOptions.contains(menuOptionInput)|| menuOptionInput.equals(null)){
-                    return menuOptionInput;
+                if(menuOptions.contains(input)|| input.equals(null)){
+                    return input;
                 }else{
                     out.adder("Check your input. " + System.lineSeparator());
                 }
@@ -247,6 +250,8 @@ public class MailServer  {
          */
 
         public void run(){
+
+            String menuOptionInput;
 
             boolean stat = true;
 
@@ -355,7 +360,7 @@ public class MailServer  {
             if(theServer.isNewAccountAdder(userTest)){
                this.mailUser = userTest;
             }else{
-                out.adder("[X] Username exists");
+                out.adder("[X] Username exists"+System.lineSeparator());
             }
 
 
@@ -412,9 +417,9 @@ public class MailServer  {
                 theId = -1;
                 e.printStackTrace();
             }
-            emailClass = theUser.giveEmail(theId);
+            emailClass = mailUser.giveEmail(theId);
 
-            if(emailClass != (null)){
+            if(emailClass != null){
                 out.addStringWithSize(10 , "FROM: ");
                 out.adder(emailClass.getSender());
                 out.adder(System.lineSeparator());

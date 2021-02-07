@@ -8,16 +8,17 @@ public class EmailClass {
    private String receiver;
    private String subject;
    private String mainbody;
-   private int idIncreaser; //CHECK
+   private int idIncreaser=1; //CHECK
 
 
     public EmailClass(String sender, String receiver, String subject, String mainbody) {
+        setId();
         this.sender = sender;
         this.receiver = receiver;
         this.subject = subject;
         this.mainbody = mainbody;
 
-        this.id = id;
+
         this.isNewEmail = true;
         this.idIncreaser=1; //μπορει να θελει αλλαγη θεσης
     }
@@ -26,9 +27,9 @@ public class EmailClass {
     /**
      * We have to increase the email id in order to
      * have unique ids for our emails.
-     * @param id --> For each mail sets a unique id
+     * For each mail sets a unique id
      */
-    public void setId(int id) {
+    public void setId() {
         id = idIncreaser++;
     }
 

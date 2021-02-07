@@ -1,12 +1,13 @@
 package com.pantz.user;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AccountClass {
 
-    private ArrayList<EmailClass> mailbox;
+    private List<EmailClass> mailbox;
     private String username;
     private String password;
     private int userAutoId;
@@ -23,7 +24,7 @@ public class AccountClass {
     /////////////////////////////////Setters & Getters/////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
-    public ArrayList<EmailClass> getMailbox() {
+    public List<EmailClass> getMailbox() {
         return mailbox;
     }
 
